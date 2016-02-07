@@ -29,11 +29,17 @@ class Todo
 
   def list
 
-    @items.each_with_index do |todo, index|
-      printf "%s: %-#{longest.size+5}s %s\n", index+1, todo.text, todo.context
-  #  @items.each do |i|
-  #    puts i
+  #  @items.each_with_index do |todo, index|
+  #    printf "%s: %-#{longest.size+5}s %s\n", index+1, todo.text, todo.context
+    @items.each do |i|
+      puts i
 
+    end
+  end
+
+  def clear
+    File.open(file, "w") do |f|
+     f.truncate(0)
     end
   end
 
@@ -48,8 +54,8 @@ class Todo
 
     def load_file
       File.open(file, 'r') do |f|
-        f.each do |line|
-          puts line
+        f.each.with_index do |line, index|
+         puts  "#{index}: #{line}"
         end
       end
     end
@@ -87,12 +93,13 @@ case ARGV[0]
     if ARGV[1] == nil
       puts "No todo added. To add todo, use: 'add', followed with your todo. "
     else
-    puts "Lagt til todo: #{ARGV[1]}"
+    puts "Added todo: #{ARGV[1]}"
     Todo.new.add(ARGV[1])
     end
   when 'list', 'l'
-    puts "Vise liste over todo items"
+    puts "Showing todos:"
     Todo.new(:filter => ARGV[1]).list
+
   when 'done'
     puts "Ferdig med todo"
   when 'delete', 'del', 'd'
@@ -100,7 +107,9 @@ case ARGV[0]
   when 'edit', 'e'
     puts "Edit valgte todo"
   when 'clear'
-    puts "Slette hele todolista"
+    puts "Slettet huskeliste"
+    puts "-------------------------"
+    Todo.new.clear
   else
     intro
 end
