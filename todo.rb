@@ -71,7 +71,7 @@ end
 def intro
   line =  "-----------------------------------------"
   puts line
-  puts "Welcome to Todo, by Devalo"
+  puts "Welcome to z.Todo, by Devalo"
   puts line
 #  puts "\n"
   puts "Usage:"
