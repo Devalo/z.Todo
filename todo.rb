@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 require 'yaml'
+require 'tempfile'
+require 'fileutils'
 class Item
   attr_accessor :value
   def initialize(value)
@@ -27,13 +29,27 @@ class Todo
    save_todo(todo)
   end
 
+  def delete(index)
+    tmp = Tempfile.new("extract")
+    open(file, "r").each.with_index do |l|
+      tmp << l unless l.chomp == index
+    end
+    tmp.close
+    FileUtils.mv(tmp.path, file)
+
+ #   File.open(file, "w") do |f|
+ #   end
+ #   todo = @items.delete_at(index.to_i)
+ #   save_todo(nil)
+ #   todo
+  end
+
   def list
 
   #  @items.each_with_index do |todo, index|
   #    printf "%s: %-#{longest.size+5}s %s\n", index+1, todo.text, todo.context
-    @items.each do |i|
-      puts i
-
+    @items.each.with_index do |todo, index|
+      puts "#{index}: #{todo}"
     end
   end
 
@@ -54,8 +70,8 @@ class Todo
 
     def load_file
       File.open(file, 'r') do |f|
-        f.each.with_index do |line, index|
-         puts  "#{index}: #{line}"
+        f.each do |line|
+          @items << line
         end
       end
     end
@@ -71,7 +87,7 @@ end
 def intro
   line =  "-----------------------------------------"
   puts line
-  puts "Welcome to z.Todo, by Devalo"
+  puts "z.Todo"
   puts line
 #  puts "\n"
   puts "Usage:"
@@ -104,6 +120,7 @@ case ARGV[0]
     puts "Ferdig med todo"
   when 'delete', 'del', 'd'
     puts "Slette valgt todo"
+    Todo.new.delete(ARGV[1])
   when 'edit', 'e'
     puts "Edit valgte todo"
   when 'clear'
