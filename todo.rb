@@ -9,9 +9,6 @@ class Item
    # @status = value
   end
 
-  def to_s
-   "#{@value}"
-  end
 end
 
 class Todo
@@ -19,7 +16,7 @@ class Todo
   def initialize(options = {})
     @options, @items = options, []
     is_todo_list_present?
-   load_file
+    load_file
   end
 
   FILE = File.expand_path('.todos')
@@ -29,19 +26,19 @@ class Todo
    save_todo(todo)
   end
 
-  def delete(index)
-    tmp = Tempfile.new("extract")
-    open(file, "r").each.with_index do |l|
-      tmp << l unless l.chomp == index
+  def delete(line)
+    tmp = Tempfile.new("todo_temp")
+    open(file, "r").each.with_index do |l, index|
+      tmp << l unless line.to_i == index-1
     end
     tmp.close
     FileUtils.mv(tmp.path, file)
 
- #   File.open(file, "w") do |f|
- #   end
- #   todo = @items.delete_at(index.to_i)
- #   save_todo(nil)
- #   todo
+#    File.open(file, "w") do |f|
+#    end
+#    todo = @items.delete_at(index.to_i)
+#    save_todo(nil)
+#    todo
   end
 
   def list
@@ -49,7 +46,7 @@ class Todo
   #  @items.each_with_index do |todo, index|
   #    printf "%s: %-#{longest.size+5}s %s\n", index+1, todo.text, todo.context
     @items.each.with_index do |todo, index|
-      puts "#{index}: #{todo}"
+      puts "[#{index+1}]: #{todo}"
     end
   end
 
@@ -79,7 +76,7 @@ class Todo
 #Åpner opp lagringsfila og lagrer todo'en
   def save_todo(todo)
     File.open(file, "a") do |f|
-      f.write("#{todo} \n")
+      f.write("#{todo} \n").to_yaml
     end
   end
 end
@@ -89,9 +86,7 @@ def intro
   puts line
   puts "z.Todo"
   puts line
-#  puts "\n"
   puts "Usage:"
-#  puts line
   puts " add 'todo'  | Adds a new todo"
   puts " delete 'n'  | Deletes a todo"
   puts " edit 'n'    | Edit a todo"
@@ -99,8 +94,6 @@ def intro
   puts " list        | List all todos"
   puts " clear       | Clear the todolist"
   puts line
-
-
 end
 
 
@@ -114,8 +107,7 @@ case ARGV[0]
     end
   when 'list', 'l'
     puts "Showing todos:"
-    Todo.new(:filter => ARGV[1]).list
-
+    Todo.new.list
   when 'done'
     puts "Ferdig med todo"
   when 'delete', 'del', 'd'
