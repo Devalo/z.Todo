@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-require 'yaml'
 require 'tempfile'
 require 'fileutils'
+
 class Item
   attr_accessor :value
   def initialize(value)
@@ -13,6 +13,7 @@ end
 
 class Todo
   attr_accessor :items
+
   def initialize(options = {})
     @options, @items = options, []
     is_todo_list_present?
@@ -22,8 +23,8 @@ class Todo
   FILE = File.expand_path('.todos')
 
   def add(todo)
-   @items << Item.new(todo)
-   save_todo(todo)
+    @items << Item.new(todo)
+    save_todo(todo)
   end
 
   def delete(line)
@@ -37,7 +38,6 @@ class Todo
   end
 
   def list
-
     @items.each.with_index do |todo, index|
       puts "[#{index+1}]: #{todo}"
     end
@@ -52,48 +52,49 @@ class Todo
   def file
     @file ||= File.exist?(FILE) ? FILE : "#{ENV['HOME']}/.todos"
   end
+
   private
 
-    def is_todo_list_present?
-      return if File.exist?(file)
-    end
+  def is_todo_list_present?
+    return if File.exist?(file)
+  end
 
-    def load_file
-      File.open(file, 'r') do |f|
-        f.each do |line|
-          @items << line
-        end
+  def load_file
+    File.open(file, 'r') do |f|
+      f.each do |line|
+        @items << line
       end
     end
+  end
 
 #Åpner opp lagringsfila og lagrer todo'en
   def save_todo(todo)
     File.open(file, "a") do |f|
-      f.write("#{todo} \n").to_yaml
+      f.write("#{todo} \n")
     end
   end
 end
 
-def intro
-  line =  "-----------------------------------------"
-  puts line
-  puts "z.Todo"
-  puts line
-  puts "Usage:"
-  puts " add 'todo'  | Adds a new todo"
-  puts " delete 'n'  | Deletes a todo"
+  def intro
+    line =  "-----------------------------------------"
+    puts line
+    puts "z.Todo"
+    puts line
+    puts "Usage:"
+    puts " add 'todo'  | Adds a new todo"
+    puts " delete 'n'  | Deletes a todo"
 #  puts " edit 'n'    | Edit a todo"
 #  puts " done 'todo' | Mark todo as done"
-  puts " list        | List all todos"
-  puts " clear       | Clear the todolist"
-  puts line
-end
+    puts " list        | List all todos"
+    puts " clear       | Clear the todolist"
+    puts line
+  end
 
 
 case ARGV[0]
   when 'add', 'a'
     if ARGV[1] == nil
-      puts "No todo added. To add todo, use: 'add', followed with your todo. "
+      puts "No todo added. To add todo, use: 'add', followed with the todo item. "
     else
     puts "Added todo: #{ARGV[1]}"
     Todo.new.add(ARGV[1])
@@ -110,7 +111,6 @@ case ARGV[0]
 #    puts "Edit valgte todo"
   when 'clear'
     puts "Deleted todo-list"
-    puts "-------------------------"
     Todo.new.clear
   else
     intro

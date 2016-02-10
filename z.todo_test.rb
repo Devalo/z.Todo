@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 require 'awesome_print'
-require File.join(File.dirname(__FILE__), 'todo.rb')
+require File.join(File.dirname(__FILE__), 'z.todo.rb')
 
 describe Todo do
   before do
@@ -16,9 +16,12 @@ describe Todo do
   it "adds a new todo" do
     @todo.add("En ny todo")
     @todo.items.size.must_equal 6
+    @todo.clear
   end
 
-#  it 'lists all todoitems' do
-#    @todo.list
-#  end
+  it "deletes the correct todo" do
+    @todo.add("Add new todo")
+    @todo.delete "1"
+    @todo.items.size.must_equal 6
+  end
 end
