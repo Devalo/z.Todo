@@ -12,7 +12,7 @@ class Item
 end
 
 class Todo
-
+  attr_accessor :items
   def initialize(options = {})
     @options, @items = options, []
     is_todo_list_present?
@@ -29,22 +29,15 @@ class Todo
   def delete(line)
     tmp = Tempfile.new("todo_temp")
     open(file, "r").each.with_index do |l, index|
-      tmp << l unless line.to_i == index-1
+      tmp << l unless line.to_i == index+1
     end
     tmp.close
     FileUtils.mv(tmp.path, file)
 
-#    File.open(file, "w") do |f|
-#    end
-#    todo = @items.delete_at(index.to_i)
-#    save_todo(nil)
-#    todo
   end
 
   def list
 
-  #  @items.each_with_index do |todo, index|
-  #    printf "%s: %-#{longest.size+5}s %s\n", index+1, todo.text, todo.context
     @items.each.with_index do |todo, index|
       puts "[#{index+1}]: #{todo}"
     end
@@ -89,8 +82,8 @@ def intro
   puts "Usage:"
   puts " add 'todo'  | Adds a new todo"
   puts " delete 'n'  | Deletes a todo"
-  puts " edit 'n'    | Edit a todo"
-  puts " done 'todo' | Mark todo as done"
+#  puts " edit 'n'    | Edit a todo"
+#  puts " done 'todo' | Mark todo as done"
   puts " list        | List all todos"
   puts " clear       | Clear the todolist"
   puts line
@@ -106,17 +99,17 @@ case ARGV[0]
     Todo.new.add(ARGV[1])
     end
   when 'list', 'l'
-    puts "Showing todos:"
+    puts "Showing todos-items:"
     Todo.new.list
-  when 'done'
-    puts "Ferdig med todo"
+#  when 'done'
+#    puts "Ferdig med todo"
   when 'delete', 'del', 'd'
-    puts "Slette valgt todo"
-    Todo.new.delete(ARGV[1])
-  when 'edit', 'e'
-    puts "Edit valgte todo"
+    puts "Deleted todo-item"
+      Todo.new.delete(ARGV[1])
+#  when 'edit', 'e'
+#    puts "Edit valgte todo"
   when 'clear'
-    puts "Slettet huskeliste"
+    puts "Deleted todo-list"
     puts "-------------------------"
     Todo.new.clear
   else
