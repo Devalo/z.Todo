@@ -7,11 +7,6 @@ git clone https://github.com/Devalo/z.Todo.git<br>
 alias zt='~/z.Todo/z.Todo.rb
 
 <h2>Usage</h2>
-add 'todo' - Adds a new todo<br>
-delete 'number' - Deletes a todo<br>
-list - Lists all todo-items<br>
-clear - Clear all todo-items<br>
-
 <table>
 <tr>
 <td>add 'todo'</td>
